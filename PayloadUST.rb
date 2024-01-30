@@ -82,3 +82,6 @@ if __FILE__==$0
     end
     PayloadUST(start_time, mode, duration, thruster_mask, variable_thrust)
 end
+
+
+#testing

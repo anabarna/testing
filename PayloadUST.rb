@@ -1,4 +1,4 @@
-#Author: Ashley Nies & Nya Oster
+#Author: Ashley Nies, Nya Oster & Anastasia Barnett 
 #References: 
 # ============================================================================
 #

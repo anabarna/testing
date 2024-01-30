@@ -36,12 +36,21 @@ def PayloadUST(start_time, mode, duration = nil)
         end
           
         case mode
-        when 0 # Aliveness Check
+        when 0 || 1 # Aliveness Check
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Beginning Mode #{mode}: Aliveness'")
             wait(30)
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Completed Mode #{mode}: Aliveness'")
             wait(1)
+      
+        when 2
+            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Beginning Mode #{mode}: '")
 
+            #actual picturing, i think returns quaternions??
+
+
+          
+            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Completed Mode #{mode}: '")
+            wait(1)
         end
     rescue Exception => e
         # Must raise an exception here to cause a non-zero exit code to move logs to anomaly

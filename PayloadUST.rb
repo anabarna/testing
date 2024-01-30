@@ -29,7 +29,7 @@ def PayloadUST(start_time, mode, duration = nil)
         #wait_check_tolerance("MAX_FSX DICE_CAL DICE_ADC_I_SNS_MCU_USAFA_STAR_TRACKER_CAL", TOLERANCE, EXPECT, 60)
         wait(1)
 
-        if mode == 0 || mode == 1 || mode == 2 || mode == 3 || mode == 4 || mode == 5 || mode == 6 || mode == 7
+        if mode == 0 || mode == 1
 
         cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Waiting for start time'")
         wait_expression("Time.now.to_i >= #{start_time}",3154e5) # timeout set to wait 10 year.
@@ -75,14 +75,5 @@ if __FILE__==$0
     start_time = $args[0].to_i
     mode = $args[1].to_i
     duration = $args[2].to_i
-    thruster_mask = $args[3].to_i(2)
-    variable_thrust = []
-    (4..$args.length - 1).each do |i|
-        variable_thrust.append($args[i].to_i)
-    end
-    PayloadUST(start_time, mode, duration, thruster_mask, variable_thrust)
+    PayloadUST(start_time, mode, duration)
 end
-
-
-#testing
-#testing pull

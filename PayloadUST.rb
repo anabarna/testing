@@ -43,13 +43,14 @@ def PayloadUST(start_time, mode, duration = nil)
             wait(1)
       
         when 2
-            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Beginning Mode #{mode}: '")
+            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Beginning Mode #{mode}: Take Photo'")
 
             #actual picturing, i think returns quaternions??
+          
 
 
           
-            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Completed Mode #{mode}: '")
+            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Completed Mode #{mode}: Take Photo'")
             wait(1)
         end
     rescue Exception => e

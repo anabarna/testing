@@ -29,7 +29,7 @@ def PayloadUST(start_time, mode, duration = nil)
         #wait_check_tolerance("MAX_FSX DICE_CAL DICE_ADC_I_SNS_MCU_USAFA_STAR_TRACKER_CAL", TOLERANCE, EXPECT, 60)
         wait(1)
 
-        if mode == 0 || mode == 1
+        if mode == 0 || mode == 1 || mode == 2
 
         cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Waiting for start time'")
         wait_expression("Time.now.to_i >= #{start_time}",3154e5) # timeout set to wait 10 year.

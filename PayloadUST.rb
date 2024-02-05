@@ -46,10 +46,17 @@ def PayloadUST(start_time, mode, duration = nil)
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Beginning Mode #{mode}: Take Photo'")
 
             #from katie:
-            # connect to camera (NOOP)
+            # connect to camera (NOOP).
             #/opt/spinnaker/bin/Enumeration  #not sure if we can just do this?
+            
+            #need to add some sort of verification then send this EVR
+            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Running Mode #{mode}: Connected to Camera'")
+            #probably need some wait time
+            wait(1) 
 
             # have correct camera settings (EXPOSURE) (tony)  #still waiting on this
+            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Running Mode #{mode}: Correct Camera Configuration'")
+            wait(1)
 
             # take photo (PHOTO)
             #USAFA_Star_Tracker.sh  (this runs Acquisition, jpg to png (connor), and LOST (katie)) #not sure if we can just do this and still waiting on parts0

@@ -45,8 +45,18 @@ def PayloadUST(start_time, mode, duration = nil)
         when 2
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Beginning Mode #{mode}: Take Photo'")
 
-            #actual picturing, i think returns quaternions??
-          
+            #from katie:
+            # connect to camera (NOOP)
+            #/opt/spinnaker/bin/Enumeration  #not sure if we can just do this?
+
+            # have correct camera settings (EXPOSURE) (tony)  #still waiting on this
+
+            # take photo (PHOTO)
+            #USAFA_Star_Tracker.sh  (this runs Acquisition, jpg to png (connor), and LOST (katie)) #not sure if we can just do this and still waiting on parts0
+
+            # generate quaternion (run LOST on photo)
+            #./lost pipeline   --png iphone_01_270.png   --focal-length 26   --pixel-size 1.9   --centroid-algo cog   --centroid-mag-filter 25   --database my-database.dat   --star-id-algo py   --angular-tolerance 0.05   --false-stars 1000   --max-mismatch-prob 0.0001   --attitude-algo dqm   --print-attitude attitude_iphone_01_270.txt 
+            #^^ also not sure if wecan just do this`          
 
 
           
@@ -87,3 +97,6 @@ if __FILE__==$0
     duration = $args[2].to_i
     PayloadUST(start_time, mode, duration)
 end
+
+
+

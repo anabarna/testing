@@ -1,0 +1,145 @@
+#### FS ATP_USAFA_StarTracker ####
+#### Author: Zack Dunn and Braden Virdell, updated by Ian Adler ####
+#### Test Group for USAFA Star Tracker ####
+
+load_utility('FILE_ULDL/lib/file_upload.rb')
+load_utility('FILE_ULDL/lib/file_download_timeout.rb')
+
+def download_files_in_usafa_not_sent()
+
+end
+
+def download_an_array_of_files(file_names_array, usafa_st_base_path)
+  number_of_photos = 0
+  file_names_array.each do |file_name|
+    file_path = usafa_st_base_path + file_name
+    timeout = 300 # 5 Min
+    begin
+      previous_num_of_completed_files = tlm("FILE_ULDL OVERALL_FILE_STATUS NUM_COMPLETED")
+      result = start_file_download(file_path, timeout)
+      if !result
+        wait_check("FILE_ULDL OVERALL_FILE_STATUS NUM_COMPLETED == #{previous_num_of_completed_files}", 10)
+        inject_tlm("FILE_ULDL", "DOWNLOAD_COMMAND", {"COMMAND"=>1}) #cancel download is result returns false
+        puts "No file to send."
+      end
+      if result
+        number_of_photos = number_of_photos + 1
+      end
+    rescue TypeError => e
+      inject_tlm("FILE_ULDL", "DOWNLOAD_COMMAND", {"COMMAND"=>1}) #ensure what the last command sent to
+      puts "TypeError when calling start_file_download()."
+      puts e.message
+      puts e.backtrace.inspect
+    end
+  end
+  return number_of_photos
+end
+
+
+def get_sn()
+  dut = ENV['DUT']
+  if dut == 'FSX_ATB'
+     device_sn = '21458177'
+  elsif dut == 'FSX_FM'
+     device_sn = '20323101'
+  end
+  return device_sn
+end
+
+
+def usafa_st_startup
+  wait_packet("MAX_FSX", "TIME_MASTER", 1, 10)
+
+  #Turn up APID rates
+  cmd("MAX_FSX MISC_CONFIG_PARSE with STRING 'tlm_master.set_apid_freq(7302, 1.0);'") # DICE
+  cmd("MAX_FSX MISC_CONFIG_PARSE with STRING 'tlm_master.set_apid_freq(7303, 1.0);'") # DICE_CAL
+  cmd("MAX_FSX MISC_CONFIG_PARSE with STRING 'tlm_master.set_apid_freq(6006, 1.0);'") # RF_USAFA_ST_REC_FL_TLM
+
+
+  #Check if DICE power channel is on
+  if tlm("MAX_FSX DICE DICE_USAFA_STAR_TRACKER_EN") == 0
+      cmd("MAX_FSX DICE_SET_PIN with INDEX 'USAFA_STAR_TRACKER_EN', VALUE 1")
+      wait_check("MAX_FSX DICE DICE_USAFA_STAR_TRACKER_EN == 1", 10)
+      wait_check_tolerance("MAX_FSX DICE_CAL DICE_ADC_I_SNS_MCU_USAFA_STAR_TRACKER_CAL", 0.1 , 0.04 , 10)
+  end
+
+  wait(10) # no other good way to make sure it's on
+end
+
+def usafa_st_cleanup
+  #Turn of DICE power channel
+  cmd("MAX_FSX DICE_SET_PIN with INDEX 'USAFA_STAR_TRACKER_EN', VALUE 0")
+  wait_check_tolerance("MAX_FSX DICE_CAL DICE_ADC_I_SNS_MCU_USAFA_STAR_TRACKER_CAL", 0.02 , 0.04 , 10)
+
+  #Turn down APID rates
+  cmd("MAX_FSX MISC_CONFIG_PARSE with STRING 'tlm_master.set_apid_freq(7302, 0.25);'") # DICE
+  cmd("MAX_FSX MISC_CONFIG_PARSE with STRING 'tlm_master.set_apid_freq(7303, 0.25);'") # DICE_CAL
+  cmd("MAX_FSX MISC_CONFIG_PARSE with STRING 'tlm_master.set_apid_freq(6006, 0.25);'") # RF_USAFA_ST_REC_FL_TLM
+end
+
+
+class USAFA_StarTracker_Functional < Cosmos::Group
+  def initialize
+      super()
+  end
+
+  def setup
+      usafa_st_startup()
+  end
+
+  def test_case_01_Health_Status
+    #Purposeful failure
+    raise SkipTestCase, 'USAFA ST Component not available yet.'
+      #TODO Check USAFA ST TLM when avaliable
+  end
+
+  def test_case_02_Basic_Take_Photo
+    # Take pictures
+    wait_expression("tlm('MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT') == 0", 30)
+    cmd("MAX_FSX FJ_START_REL with FUNCTION_CODE 399769600, SECONDS 0, FILE 'usafa_st.fj', ARGS 'TAKE'")
+
+    # Wait for at least 4 pictures
+    wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30)
+  end
+
+  def test_case_03_download_photos
+    device_sn = get_sn()
+    #Name of file to down load
+    file_names_array = [ 'Acquisition-' + device_sn + '-0.jpg',
+                  'Acquisition-' + device_sn + '-1.jpg',
+                  'Acquisition-' + device_sn + '-2.jpg',
+                  'Acquisition-' + device_sn + '-3.jpg',
+                  'Acquisition-' + device_sn + '-4.jpg',
+                  'Acquisition-' + device_sn + '-5.jpg',
+                  'Acquisition-' + device_sn + '-6.jpg',
+                  'Acquisition-' + device_sn + '-7.jpg',
+                  'Acquisition-' + device_sn + '-8.jpg',
+                  'Acquisition-' + device_sn + '-9.jpg']
+
+    startingNumFailed = tlm("FILE_ULDL OVERALL_FILE_STATUS NUM_FAILED")
+    usafa_st_base_path = '/home/root/active_spare/usafa_star_tracker/not_sent/'
+
+    not_sent_count = tlm("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT")
+    if not_sent_count > 4
+      num_of_photos = download_an_array_of_files(file_names_array, usafa_st_base_path)
+
+      # If this fails, then something went wrong downloading the files
+      check_expression("tlm('FILE_ULDL OVERALL_FILE_STATUS NUM_FAILED') == #{startingNumFailed} ")
+      puts "number of photos downloaded #{num_of_photos}"
+
+      # Move pictures to the sent folder, and check success
+      puts("Moving pictures to sent folder...")
+      cmd("MAX_FSX FJ_START_REL with FUNCTION_CODE 399769600, SECONDS 0, FILE 'usafa_st.fj', ARGS 'MOVE'")
+      wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT == 0", 180)
+      wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_SENT_COUNT > 4", 30)
+    else
+      wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30)
+      puts 'There are not at least 4 pictures in the not_sent folder'
+    end
+
+  end
+
+  def teardown
+      usafa_st_cleanup()
+  end
+end

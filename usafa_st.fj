@@ -1,0 +1,13 @@
+PROC usafa_st (STRING cmd_arg)
+
+BEGIN
+        IF (UPPERCASE(cmd_arg) == "TAKE")
+                CMD "MISC_EVR" ("E_INFO: USAFA_ST_take_pictures: begin")
+                CMD "MISC_SYSTEM" ("sh /home/root/max/seq/sh/USAFA_ST_take_pictures.sh")
+        ELSEIF (UPPERCASE(cmd_arg) == "MOVE")
+                CMD "MISC_EVR" ("E_INFO: USAFA_ST_mc_pictures: begin")
+                CMD "MISC_SYSTEM" ("sh /home/root/max/seq/sh/USAFA_ST_mv_pictures.sh")
+        ELSE
+                CMD "MISC_EVR" ("E_INFO: FAILED TO RECOGNIZE CMD ARG: ")
+        ENDIF
+ENDPROC

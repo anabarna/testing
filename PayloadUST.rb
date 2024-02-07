@@ -65,7 +65,7 @@ def PayloadUST(start_time, mode, duration = nil)
             #./lost pipeline   --png iphone_01_270.png   --focal-length 26   --pixel-size 1.9   --centroid-algo cog   --centroid-mag-filter 25   --database my-database.dat   --star-id-algo py   --angular-tolerance 0.05   --false-stars 1000   --max-mismatch-prob 0.0001   --attitude-algo dqm   --print-attitude attitude_iphone_01_270.txt 
             #^^ also not sure if wecan just do this`          
 
-
+            #root@DevelLinux:~/active_spare/usafa_star_tracker/not_sent#
           
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Completed Mode #{mode}: Take Photo'")
             wait(1)

@@ -21,7 +21,7 @@ def PayloadUST(start_time, mode, duration = nil)
      device_sn = '20323101'
   end
   return device_sn
-end
+  end
   
     begin
 

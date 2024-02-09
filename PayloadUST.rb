@@ -14,13 +14,13 @@
 def PayloadUST(start_time, mode, duration = nil)
 
   def get_sn()
-  dut = ENV['DUT']
-  if dut == 'FSX_ATB'
-     device_sn = '21458177'
-  elsif dut == 'FSX_FM'
-     device_sn = '20323101'
-  end
-  return device_sn
+    dut = ENV['DUT']
+    if dut == 'FSX_ATB'
+        device_sn = '21458177'
+    elsif dut == 'FSX_FM'
+      device_sn = '20323101'
+    end
+    return device_sn
   end
   
     begin

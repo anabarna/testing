@@ -53,6 +53,14 @@ def PayloadUST(start_time, mode, duration = nil)
             wait(1)
       
         when 2
+            def test_case_02_Basic_Take_Photo
+              # Take pictures
+              wait_expression("tlm('MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT') == 0", 30)
+              cmd("MAX_FSX FJ_START_REL with FUNCTION_CODE 399769600, SECONDS 0, FILE 'usafa_st.fj', ARGS 'TAKE'")
+
+              # Wait for at least 4 pictures
+              wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30)
+            end
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Beginning Mode #{mode}: Take Photo'")
 
             #from katie:

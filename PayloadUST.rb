@@ -69,52 +69,51 @@ end
             # Take pictures
             cmd("MAX_FSX FJ_START_REL with FUNCTION_CODE 399769600, SECONDS 0, FILE 'usafa_st.fj', ARGS 'TAKE'")
             if not_sent_count > 4 #is this right?? 
-            # Wait for at least 4 pictures
+              # Wait for at least 4 pictures
               wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30)
-            #if not greater than 4, add EVR? or something else?
+              #if not greater than 4, add EVR? or something else?
             else
               wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30)
               puts 'There are not at least 4 pictures in the not_sent folder'
-          end
+            end
           
           def test_case_03_download_photos
-             
-             device_sn = get_sn()
-             #Name of file to down load
-             file_names_array = [ 'Acquisition-' + device_sn + '-0.jpg',
-                  'Acquisition-' + device_sn + '-1.jpg',
-                  'Acquisition-' + device_sn + '-2.jpg',
-                  'Acquisition-' + device_sn + '-3.jpg',
-                  'Acquisition-' + device_sn + '-4.jpg',
-                  'Acquisition-' + device_sn + '-5.jpg',
-                  'Acquisition-' + device_sn + '-6.jpg',
-                  'Acquisition-' + device_sn + '-7.jpg',
-                  'Acquisition-' + device_sn + '-8.jpg',
-                  'Acquisition-' + device_sn + '-9.jpg']
+            device_sn = get_sn()
+            #Name of file to down load
+            file_names_array = [ 'Acquisition-' + device_sn + '-0.jpg',
+                 'Acquisition-' + device_sn + '-1.jpg',
+                 'Acquisition-' + device_sn + '-2.jpg',
+                 'Acquisition-' + device_sn + '-3.jpg',
+                 'Acquisition-' + device_sn + '-4.jpg',
+                 'Acquisition-' + device_sn + '-5.jpg',
+                 'Acquisition-' + device_sn + '-6.jpg',
+                 'Acquisition-' + device_sn + '-7.jpg',
+                 'Acquisition-' + device_sn + '-8.jpg',
+                 'Acquisition-' + device_sn + '-9.jpg']
             #is the above just like spot to put pics? do we need to add more than 9? or is it okay if we dont fill them all?
-             startingNumFailed = tlm("FILE_ULDL OVERALL_FILE_STATUS NUM_FAILED")
-             usafa_st_base_path = '/home/root/active_spare/usafa_star_tracker/not_sent/'
+            startingNumFailed = tlm("FILE_ULDL OVERALL_FILE_STATUS NUM_FAILED")
+            usafa_st_base_path = '/home/root/active_spare/usafa_star_tracker/not_sent/'
 
-           not_sent_count = tlm("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT")
-           if not_sent_count > 4
-             num_of_photos = download_an_array_of_files(file_names_array, usafa_st_base_path)
+            not_sent_count = tlm("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT")
+            if not_sent_count > 4
+              num_of_photos = download_an_array_of_files(file_names_array, usafa_st_base_path)
 
              # If this fails, then something went wrong downloading the files
-             check_expression("tlm('FILE_ULDL OVERALL_FILE_STATUS NUM_FAILED') == #{startingNumFailed} ")
-             puts "number of photos downloaded #{num_of_photos}"
+              check_expression("tlm('FILE_ULDL OVERALL_FILE_STATUS NUM_FAILED') == #{startingNumFailed} ")
+              puts "number of photos downloaded #{num_of_photos}"
 
              # Move pictures to the sent folder, and check success
-             puts("Moving pictures to sent folder...")
-             cmd("MAX_FSX FJ_START_REL with FUNCTION_CODE 399769600, SECONDS 0, FILE 'usafa_st.fj', ARGS 'MOVE'")
-             wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT == 0", 180)
-             wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_SENT_COUNT > 4", 30)
+              puts("Moving pictures to sent folder...")
+              cmd("MAX_FSX FJ_START_REL with FUNCTION_CODE 399769600, SECONDS 0, FILE 'usafa_st.fj', ARGS 'MOVE'")
+              wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT == 0", 180)
+              wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_SENT_COUNT > 4", 30)
              
-          else
-            wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30)
-            puts 'There are not at least 4 pictures in the not_sent folder' #should this be there are at least 4 photos in not_sent?
-          end               
-          cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Completed Mode #{mode}: Take Photo'")
-          wait(1)
+            else
+              wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30)
+              puts 'There are not at least 4 pictures in the not_sent folder' #should this be there are at least 4 photos in not_sent?
+            end               
+            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Completed Mode #{mode}: Take Photo'")
+            wait(1)
           end
         end
 

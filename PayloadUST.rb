@@ -13,6 +13,7 @@
 
 def PayloadUST(start_time, mode, duration = nil)
 
+#new function we added, is that right?
 def get_sn()
   dut = ENV['DUT']
   if dut == 'FSX_ATB'
@@ -51,17 +52,31 @@ end
             wait(30)
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Completed Mode #{mode}: Aliveness'")
             wait(1)
-      
-        when 2
+#new stuff      
+        when 2 #taking 5 photos and sending to GS
           def test_case_02_Basic_Take_Photo
-            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Beginning Mode #{mode}: Take Photo'")
-            # Take pictures
-            wait_expression("tlm('MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT') == 0", 30)
-            cmd("MAX_FSX FJ_START_REL with FUNCTION_CODE 399769600, SECONDS 0, FILE 'usafa_st.fj', ARGS 'TAKE'")
+            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Beginning Mode #{mode}: Take Photo'") #diff color mode on nya and anyas
+            #need to add some sort of verification then send this EVR
+            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Running Mode #{mode}: Connected to Camera'")
+            #probably need some wait time
+            wait(1) 
 
+            # have correct camera settings (EXPOSURE) (tony)  #still waiting on this
+            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Running Mode #{mode}: Correct Camera Configuration'")
+            wait(1)
+
+            
+            # Take pictures
+            cmd("MAX_FSX FJ_START_REL with FUNCTION_CODE 399769600, SECONDS 0, FILE 'usafa_st.fj', ARGS 'TAKE'")
+            if not_sent_count > 4 #is this right?? 
             # Wait for at least 4 pictures
-            wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30)
+              wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30)
+            #if not greater than 4, add EVR? or something else?
+            else
+              wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30)
+              puts 'There are not at least 4 pictures in the not_sent folder'
           end
+          
           def test_case_03_download_photos
              
              device_sn = get_sn()
@@ -76,6 +91,7 @@ end
                   'Acquisition-' + device_sn + '-7.jpg',
                   'Acquisition-' + device_sn + '-8.jpg',
                   'Acquisition-' + device_sn + '-9.jpg']
+            #is the above just like spot to put pics? do we need to add more than 9? or is it okay if we dont fill them all?
              startingNumFailed = tlm("FILE_ULDL OVERALL_FILE_STATUS NUM_FAILED")
              usafa_st_base_path = '/home/root/active_spare/usafa_star_tracker/not_sent/'
 
@@ -92,38 +108,17 @@ end
              cmd("MAX_FSX FJ_START_REL with FUNCTION_CODE 399769600, SECONDS 0, FILE 'usafa_st.fj', ARGS 'MOVE'")
              wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT == 0", 180)
              wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_SENT_COUNT > 4", 30)
+             
           else
             wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30)
-            puts 'There are not at least 4 pictures in the not_sent folder'
+            puts 'There are not at least 4 pictures in the not_sent folder' #should this be there are at least 4 photos in not_sent?
+          end               
+          cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Completed Mode #{mode}: Take Photo'")
+          wait(1)
           end
         end
-          
 
-            #from katie:
-            # connect to camera (NOOP).
-            #/opt/spinnaker/bin/Enumeration  #not sure if we can just do this?
-            
-            #need to add some sort of verification then send this EVR
-            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Running Mode #{mode}: Connected to Camera'")
-            #probably need some wait time
-            wait(1) 
 
-            # have correct camera settings (EXPOSURE) (tony)  #still waiting on this
-            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Running Mode #{mode}: Correct Camera Configuration'")
-            wait(1)
-
-            # take photo (PHOTO)
-            #USAFA_Star_Tracker.sh  (this runs Acquisition, jpg to png (connor), and LOST (katie)) #not sure if we can just do this and still waiting on parts0
-
-            # generate quaternion (run LOST on photo)
-            #./lost pipeline   --png iphone_01_270.png   --focal-length 26   --pixel-size 1.9   --centroid-algo cog   --centroid-mag-filter 25   --database my-database.dat   --star-id-algo py   --angular-tolerance 0.05   --false-stars 1000   --max-mismatch-prob 0.0001   --attitude-algo dqm   --print-attitude attitude_iphone_01_270.txt 
-            #^^ also not sure if wecan just do this`          
-
-            #root@DevelLinux:~/active_spare/usafa_star_tracker/not_sent#
-          
-            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Completed Mode #{mode}: Take Photo'")
-            wait(1)
-        end
     rescue Exception => e
         # Must raise an exception here to cause a non-zero exit code to move logs to anomaly
         raise "Exception during mode #{mode}: #{e.message} at #{e.backtrace}"

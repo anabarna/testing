@@ -74,10 +74,11 @@ end
               #if not greater than 4, add EVR? or something else?
             else
               wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30)
-              puts 'There are not at least 4 pictures in the not_sent folder'
+              cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, There are not at least 4 pictures in the not_sent folder'")
             end
           
           def test_case_03_download_photos
+            cmd("MAX_FSX MISC_EVR with STRING 'Beginning Photo Download'")
             device_sn = get_sn()
             #Name of file to down load
             file_names_array = [ 'Acquisition-' + device_sn + '-0.jpg',
@@ -100,17 +101,16 @@ end
 
              # If this fails, then something went wrong downloading the files
               check_expression("tlm('FILE_ULDL OVERALL_FILE_STATUS NUM_FAILED') == #{startingNumFailed} ")
-              puts "number of photos downloaded #{num_of_photos}"
-
+              cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, number of photos downloaded #{num_of_photos}'") 
              # Move pictures to the sent folder, and check success
-              puts("Moving pictures to sent folder...")
+              cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Moving pictures to sent folder'")
               cmd("MAX_FSX FJ_START_REL with FUNCTION_CODE 399769600, SECONDS 0, FILE 'usafa_st.fj', ARGS 'MOVE'")
               wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT == 0", 180)
               wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_SENT_COUNT > 4", 30)
              
             else
               wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30)
-              puts 'There are not at least 4 pictures in the not_sent folder' #should this be there are at least 4 photos in not_sent?
+              cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, There are not at least 4 pictures in the not_sent folder'") #should this be there are at least 4 photos in not_sent?
             end               
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUST, Completed Mode #{mode}: Take Photo'")
             wait(1)

@@ -47,23 +47,19 @@ def PayloadUSAFAST(start_time, mode, duration)
 #new stuff      
         when 2 #taking 5 photos and sending to GS
           cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Beginning Mode #{mode}: Take Photo'") 
-          #need to add some sort of verification then send this EVR
-          cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Running Mode #{mode}: Connected to Camera'")
-          #probably need some wait time
-          wait(1) 
-
-          # have correct camera settings (EXPOSURE) (tony)  #still waiting on this
-          cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Running Mode #{mode}: Correct Camera Configuration'")
           wait(1)
           
           # Take pictures
-          cmd("MAX_FSX FJ_START_REL with FUNCTION_CODE 399769600, SECONDS 0, FILE 'usafa_st.fj', ARGS 'TAKE'")
+          cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Running shell script to take picture'")
+          cmd("MAX_FSX MISC_SYSTEM with STRING 'sh /home/root/max/seq/sh/USAFA_ST_take_pictures.sh'")
+          wait(30)
+          
+          not_sent_count = tlm("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT")
           if not_sent_count > 4 
             # Wait for at least 4 pictures
-            wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30)
-            #if not greater than 4, add EVR? or something else?
+             #add evr
+
           else
-            wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30)
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There are not at least 4 pictures in the not_sent folder'")
           end
         

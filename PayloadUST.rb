@@ -55,7 +55,8 @@ def PayloadUSAFAST(start_time, mode, duration)
           wait(30)
           
           not_sent_count = tlm("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT")
-          if not_sent_count > 4 
+          if not_sent_count > 4
+            num_of_photos = download_an_array_of_files(file_names_array, usafa_st_base_path)
             # Wait for at least 4 pictures
              #add evr
 
@@ -66,7 +67,7 @@ def PayloadUSAFAST(start_time, mode, duration)
         def test_case_03_download_photos
           cmd("MAX_FSX MISC_EVR with STRING 'Beginning Photo Download'")
           device_sn = get_sn()
-          #Name of file to down load
+          #Name of file to download
           file_names_array = [ 'Acquisition-' + device_sn + '-0.jpg',
                'Acquisition-' + device_sn + '-1.jpg',
                'Acquisition-' + device_sn + '-2.jpg',
@@ -84,6 +85,7 @@ def PayloadUSAFAST(start_time, mode, duration)
           not_sent_count = tlm("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT")
           if not_sent_count > 4
             num_of_photos = download_an_array_of_files(file_names_array, usafa_st_base_path)
+            #written twice, do we need this here?
 
            # If this fails, then something went wrong downloading the files
             check_expression("tlm('FILE_ULDL OVERALL_FILE_STATUS NUM_FAILED') == #{startingNumFailed} ")
@@ -95,10 +97,10 @@ def PayloadUSAFAST(start_time, mode, duration)
             wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_SENT_COUNT > 4", 30)
            
           else
-            wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30)
+            wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30) #also written twice
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There are not at least 4 pictures in the not_sent folder'") #should this be there are at least 4 photos in not_sent?
           end               
-          cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Completed Mode #{mode}: Take Photo'")
+          cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Completed Mode #{mode}: Take Photo'") #should this be tabbed over?
           wait(1)
         end
 

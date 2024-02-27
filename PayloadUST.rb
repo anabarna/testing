@@ -56,7 +56,6 @@ def PayloadUSAFAST(start_time, mode, duration)
           
           not_sent_count = tlm("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT")
           if not_sent_count > 4
-            num_of_photos = download_an_array_of_files(file_names_array, usafa_st_base_path)
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There are at least 4 pictures in the not_sent folder'")
          
           else

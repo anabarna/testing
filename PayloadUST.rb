@@ -44,7 +44,7 @@ def PayloadUSAFAST(start_time, mode, duration)
             wait(30)
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Completed Mode #{mode}: Aliveness'")
             wait(1)
-#new stuff      
+    
         when 2 #taking 5 photos and sending to GS
           cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Beginning Mode #{mode}: Take Photo'") 
           wait(1)
@@ -57,9 +57,8 @@ def PayloadUSAFAST(start_time, mode, duration)
           not_sent_count = tlm("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT")
           if not_sent_count > 4
             num_of_photos = download_an_array_of_files(file_names_array, usafa_st_base_path)
-            # Wait for at least 4 pictures
-             #add evr
-
+            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There are at least 4 pictures in the not_sent folder'")
+         
           else
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There are not at least 4 pictures in the not_sent folder'")
           end
@@ -126,8 +125,11 @@ def PayloadUSAFAST(start_time, mode, duration)
         cmd("MAX_FSX MISC_CONFIG_PARSE with STRING 'rec_packet_med_rate_active.set_apid_freq(7303, 0.025);'") # DICE_CAL
         wait(1)  
 
-          #add attitude and ephemeris rates set to 0.025
-  
+        #add attitude and ephemeris rates set to 0.025
+        cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Turning down attitude and ephemeris APID rates to 0.025Hz.'")
+        cmd("MAX_FSX MISC_CONFIG_PARSE with STRING 'rec_packet_high_rate_active.set_apid_freq(600, 0.025);'") 
+        cmd("MAX_FSX MISC_CONFIG_PARSE with STRING 'rec_packet_high_rate_active.set_apid_freq(610, 0.025);'") 
+        cmd("MAX_FSX MISC_CONFIG_PARSE with STRING 'rec_packet_high_rate_active.set_apid_freq(611, 0.025);'") 
   
         cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Completed cleanup procedures'")
         wait(1)

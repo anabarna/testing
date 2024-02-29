@@ -76,7 +76,7 @@ def PayloadUSAFAST(start_time, mode, duration)
                'Acquisition-' + device_sn + '-7.jpg',
                'Acquisition-' + device_sn + '-8.jpg',
                'Acquisition-' + device_sn + '-9.jpg']
-          #is the above jUSAFAST like spot to put pics? do we need to add more than 9? or is it okay if we dont fill them all?
+          
           startingNumFailed = tlm("FILE_ULDL OVERALL_FILE_STATUS NUM_FAILED")
           usafa_st_base_path = '/home/root/active_spare/usafa_star_tracker/not_sent/'
 
@@ -96,9 +96,9 @@ def PayloadUSAFAST(start_time, mode, duration)
            
           else
             wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30) #also written twice
-            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There are not at least 4 pictures in the not_sent folder'") #should this be there are at least 4 photos in not_sent?
+            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There are at least 4 pictures in the not_sent folder'")
           end               
-          cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Completed Mode #{mode}: Take Photo'") #should this be tabbed over?
+          cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Completed Mode #{mode}: Take Photo'") 
           wait(1)
         end
 

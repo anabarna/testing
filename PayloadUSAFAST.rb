@@ -55,16 +55,16 @@ def PayloadUSAFAST(start_time, mode, duration)
           wait(30)
           
           not_sent_count = tlm("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT")
-          if not_sent_count > 4
-            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There are at least 4 pictures in the not_sent folder'")
-         
+          if not_sent_count > 0
+            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There is at least 1 picture in the not_sent folder'")
           else
-            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There are not at least 4 pictures in the not_sent folder'")
+            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There is not a picture in the not_sent folder'")
           end
         
-        def test_case_03_download_photos
           cmd("MAX_FSX MISC_EVR with STRING 'Beginning Photo Download'")
-          device_sn = get_sn()
+          device_sn = '20323101' #this is the acquisition number for the flight model
+          #device_sn = '21458177' #this is the acquisition number for the ATB
+          
           #Name of file to download
           file_names_array = [ 'Acquisition-' + device_sn + '-0.jpg',
                'Acquisition-' + device_sn + '-1.jpg',
@@ -76,6 +76,7 @@ def PayloadUSAFAST(start_time, mode, duration)
                'Acquisition-' + device_sn + '-7.jpg',
                'Acquisition-' + device_sn + '-8.jpg',
                'Acquisition-' + device_sn + '-9.jpg']
+          #does this matter if it is not 10? 
           
           startingNumFailed = tlm("FILE_ULDL OVERALL_FILE_STATUS NUM_FAILED")
           usafa_st_base_path = '/home/root/active_spare/usafa_star_tracker/not_sent/'

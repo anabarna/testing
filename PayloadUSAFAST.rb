@@ -52,7 +52,7 @@ def PayloadUSAFAST(start_time, mode, duration)
           # Take pictures
           cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Running shell script to take picture'")
           cmd("MAX_FSX MISC_SYSTEM with STRING 'sh /home/root/max/seq/sh/USAFA_ST_take_pictures.sh'")
-          wait(30)
+          wait(30) #Star Tracker team says pictures are taken rapidly so 30 sec should be plenty for 10 pics
           
           not_sent_count = tlm("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT")
           if not_sent_count > 0
@@ -61,48 +61,50 @@ def PayloadUSAFAST(start_time, mode, duration)
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There is not a picture in the not_sent folder'")
           end
         
-          cmd("MAX_FSX MISC_EVR with STRING 'Beginning Photo Download'")
-          device_sn = '20323101' #this is the acquisition number for the flight model
-          #device_sn = '21458177' #this is the acquisition number for the ATB
+        #   cmd("MAX_FSX MISC_EVR with STRING 'Beginning Photo Download'")
+        #   device_sn = '20323101' #this is the acquisition number for the flight model
+        #   #device_sn = '21458177' #this is the acquisition number for the ATB
           
-          #Name of file to download
-          file_names_array = [ 'Acquisition-' + device_sn + '-0.jpg',
-               'Acquisition-' + device_sn + '-1.jpg',
-               'Acquisition-' + device_sn + '-2.jpg',
-               'Acquisition-' + device_sn + '-3.jpg',
-               'Acquisition-' + device_sn + '-4.jpg',
-               'Acquisition-' + device_sn + '-5.jpg',
-               'Acquisition-' + device_sn + '-6.jpg',
-               'Acquisition-' + device_sn + '-7.jpg',
-               'Acquisition-' + device_sn + '-8.jpg',
-               'Acquisition-' + device_sn + '-9.jpg']
-          #does this matter if it is not 10? 
+        #   #Name of file to download
+        #   file_names_array = [ 'Acquisition-' + device_sn + '-0.jpg',
+        #        'Acquisition-' + device_sn + '-1.jpg',
+        #        'Acquisition-' + device_sn + '-2.jpg',
+        #        'Acquisition-' + device_sn + '-3.jpg',
+        #        'Acquisition-' + device_sn + '-4.jpg',
+        #        'Acquisition-' + device_sn + '-5.jpg',
+        #        'Acquisition-' + device_sn + '-6.jpg',
+        #        'Acquisition-' + device_sn + '-7.jpg',
+        #        'Acquisition-' + device_sn + '-8.jpg',
+        #        'Acquisition-' + device_sn + '-9.jpg']
+        #   #does this matter if it is not 10? 
           
-          startingNumFailed = tlm("FILE_ULDL OVERALL_FILE_STATUS NUM_FAILED")
-          usafa_st_base_path = '/home/root/active_spare/usafa_star_tracker/not_sent/'
+        #   startingNumFailed = tlm("FILE_ULDL OVERALL_FILE_STATUS NUM_FAILED")
+        #   usafa_st_base_path = '/home/root/active_spare/usafa_star_tracker/not_sent/'
 
-          not_sent_count = tlm("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT")
-          if not_sent_count > 4
-            num_of_photos = download_an_array_of_files(file_names_array, usafa_st_base_path)
-            #written twice, do we need this here?
+        #   not_sent_count = tlm("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT")
+        #   if not_sent_count > 4
+        #     num_of_photos = download_an_array_of_files(file_names_array, usafa_st_base_path)
+        #     #written twice, do we need this here?
 
-           # If this fails, then something went wrong downloading the files
-            check_expression("tlm('FILE_ULDL OVERALL_FILE_STATUS NUM_FAILED') == #{startingNumFailed} ")
-            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, number of photos downloaded #{num_of_photos}'") 
-           # Move pictures to the sent folder, and check success
-            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Moving pictures to sent folder'")
-            cmd("MAX_FSX FJ_START_REL with FUNCTION_CODE 399769600, SECONDS 0, FILE 'usafa_st.fj', ARGS 'MOVE'")
-            wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT == 0", 180)
-            wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_SENT_COUNT > 4", 30)
+        #    # If this fails, then something went wrong downloading the files
+        #     check_expression("tlm('FILE_ULDL OVERALL_FILE_STATUS NUM_FAILED') == #{startingNumFailed} ")
+        #     cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, number of photos downloaded #{num_of_photos}'") 
+        #    # Move pictures to the sent folder, and check success
+        #     cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Moving pictures to sent folder'")
+        #     cmd("MAX_FSX FJ_START_REL with FUNCTION_CODE 399769600, SECONDS 0, FILE 'usafa_st.fj', ARGS 'MOVE'")
+        #     wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT == 0", 180)
+        #     wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_SENT_COUNT > 4", 30)
            
-          else
-            wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30) #also written twice
-            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There are at least 4 pictures in the not_sent folder'")
-          end               
+        #   else
+        #     wait_check("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT > 4", 30) #also written twice
+        #     cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There are at least 4 pictures in the not_sent folder'")
+        #   end               
+        #   cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Completed Mode #{mode}: Take Photo'") 
+        #   wait(1)
+        # end
           cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Completed Mode #{mode}: Take Photo'") 
           wait(1)
         end
-
 
     rescue Exception => e
         # MUSAFAST raise an exception here to cause a non-zero exit code to move logs to anomaly

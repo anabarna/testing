@@ -55,7 +55,6 @@ def PayloadUSAFAST(start_time, mode, duration)
           #cmd("MAX_FSX MISC_SYSTEM with STRING 'sh /home/root/max/seq/sh/USAFA_ST_take_pictures.sh'") #what we had initially
           wait(30) #Star Tracker team says pictures are taken rapidly so 30 sec should be plenty for 10 pics
           
-          not_sent_count = tlm("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT")
           # if not_sent_count > 0
           #   cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There is at least 1 picture in the not_sent folder'")
           # else

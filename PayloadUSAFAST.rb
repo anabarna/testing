@@ -51,14 +51,21 @@ def PayloadUSAFAST(start_time, mode, duration)
           
           # Take pictures
           cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Running shell script to take picture'")
-          cmd("MAX_FSX MISC_SYSTEM with STRING 'sh /home/root/max/seq/sh/USAFA_ST_take_pictures.sh'")
+          cmd("MAX_FSX MISC_SYSTEM with STRING 'source /home/root/max/seq/sh/USAFA_ST_take_pictures.sh'") #changed cmd
+          #cmd("MAX_FSX MISC_SYSTEM with STRING 'sh /home/root/max/seq/sh/USAFA_ST_take_pictures.sh'") #what we had initially
           wait(30) #Star Tracker team says pictures are taken rapidly so 30 sec should be plenty for 10 pics
           
           not_sent_count = tlm("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT")
+          # if not_sent_count > 0
+          #   cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There is at least 1 picture in the not_sent folder'")
+          # else
+          #   cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There is not a picture in the not_sent folder'")
+          # end
+          not_sent_count = tlm("MAX_FSX RF_USAFA_ST_REC_FL_TLM RF_USAFA_ST_NOT_SENT_COUNT")
           if not_sent_count > 0
-            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There is at least 1 picture in the not_sent folder'")
+            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There are #{not_sent_count} pictures in the not_sent folder'")
           else
-            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, There is not a picture in the not_sent folder'")
+            cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, No pictures were taken'")
           end
         
         #   cmd("MAX_FSX MISC_EVR with STRING 'Beginning Photo Download'")

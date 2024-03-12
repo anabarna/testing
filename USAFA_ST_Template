@@ -30,12 +30,12 @@ wait_expression("Time.now.to_i >= #{slewincompletiontime-600}",wait_time)
 # Send EVR's
 cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, SEQUENCE BEGINNING'")
 wait(1)
-cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadDISCO, Start Time: #{start_time}, DISCO Mode: #{mode}, Task Duration: #{task_duration}'")
+cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Start Time: #{start_time}, DISCO Mode: #{mode}, Task Duration: #{task_duration}'")
 wait(1)
 
 #loop to start slew if slewing
 if slew_mode != 0
-    cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadDISCO, SlewIn Completion Time: #{slewincompletiontime}, SlewOut Completion Time: #{slewoutcompletiontime}'")
+    cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, SlewIn Completion Time: #{slewincompletiontime}, SlewOut Completion Time: #{slewoutcompletiontime}'")
     wait(1)
     # Start Master ADCS
     cmd("MAX_FSX FJ_START_REL with Seconds 0, File Master_ADCS.fj, Args '#{slewincompletiontime},#{slew_mode},#{target},#{q0},#{q1},#{q2},#{q3}'")
@@ -45,7 +45,7 @@ end
 wait_expression("Time.now.to_i >= #{start_time-300}", wait_time) # Timeout variable set to wait 1 year.
 
 #Start payload event
-cmd("MAX_FSX SM_START_REL with SECONDS 0, FILE_NAME PayloadDISCO.rb, ARGS '#{start_time} #{mode} #{duration} #{experiment_csf} #{offload_csf}'")
+cmd("MAX_FSX SM_START_REL with SECONDS 0, FILE_NAME PayloadUSAFAST.rb, ARGS '#{start_time} #{mode} #{duration} #{experiment_csf} #{offload_csf}'")
 
 #Slew back to Sun Track if slewing
 if slew_mode != 0

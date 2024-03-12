@@ -28,7 +28,7 @@ q3 = 1.0
 
 wait_expression("Time.now.to_i >= #{slewincompletiontime-600}",wait_time)
 # Send EVR's
-cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadDISCO, SEQUENCE BEGINNING'")
+cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, SEQUENCE BEGINNING'")
 wait(1)
 cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadDISCO, Start Time: #{start_time}, DISCO Mode: #{mode}, Task Duration: #{task_duration}'")
 wait(1)

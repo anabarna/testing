@@ -14,8 +14,8 @@ offload_csf = "**.csf"  # command set file dictionary needed to offload experime
 
 #Set Slew Variables
 task_duration = duration     # Duration plus slew time
-slew_mode = 8             # Desired Orientation of satellite during event. Default setting is a -Y panel spotlight. #i think want to change this
-target = **			     # Target location number. If not used, send with 0  #maybe want to change this?
+slew_mode = 7             # Desired Orientation of satellite during event. #Quaterion pointing case (inertial hold)
+target = **			     # Target location number. If not used, send with 0  
 slewincompletiontime = start_time - 600 # Slew in 10 mins before start time
 slewoutcompletiontime = start_time + task_duration + 900           # Slew out after event
 

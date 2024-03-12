@@ -9,9 +9,8 @@
 start_time = DateTime.strptime("MM/DD/YYYY HH:MM:SS.000", date_format).to_time.to_i #strptime(Date, Format)
 mode = **
 duration = **    # duration in seconds based off time to complete mode; 300 if running mode 3
-experiment_csf = "**.csf"   # command set file dictionary for experiment #guessing we dont need to change this but not sure
-offload_csf = "**.csf"  # command set file dictionary needed to offload experiment data, default=MCModeNoNewMRFile.csf (as of 7/10/2023) #also guessing we do not need to change this but not sure
-
+experiment_csf = "**.csf"   # command set file dictionary for experiment 
+offload_csf = "**.csf"  # command set file dictionary needed to offload experiment data, default=MCModeNoNewMRFile.csf (as of 7/10/2023) 
 #Set Slew Variables
 task_duration = duration     # Duration plus slew time
 slew_mode = 7             # Desired Orientation of satellite during event. #Quaterion pointing case (inertial hold)

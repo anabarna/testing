@@ -8,9 +8,8 @@
 # Set Variables
 start_time = DateTime.strptime("MM/DD/YYYY HH:MM:SS.000", date_format).to_time.to_i #strptime(Date, Format)
 mode = **
-duration = **    # duration in seconds based off time to complete mode; 300 if running mode 3
-experiment_csf = "**.csf"   # command set file dictionary for experiment 
-offload_csf = "**.csf"  # command set file dictionary needed to offload experiment data, default=MCModeNoNewMRFile.csf (as of 7/10/2023) 
+duration = **    # duration in seconds based off time to complete mode
+
 #Set Slew Variables
 task_duration = duration     # Duration plus slew time
 slew_mode = 7             # Desired Orientation of satellite during event. #Quaterion pointing case (inertial hold)
@@ -19,7 +18,7 @@ slewincompletiontime = start_time - 600 # Slew in 10 mins before start time
 slewoutcompletiontime = start_time + task_duration + 900           # Slew out after event
 
 # Only if needed, otherwise leave equal to [q0, q1, q2, q3] = [0.0, 0.0, 0.0, 1.0].
-# If needed, do not use more than 6 places behind decimal 
+# If needed, do not use more than 6 places behind decimal, this is needed for slew_mode = 7
 q0 = 0.0
 q1 = 0.0
 q2 = 0.0
@@ -44,7 +43,7 @@ end
 wait_expression("Time.now.to_i >= #{start_time-300}", wait_time) # Timeout variable set to wait 1 year.
 
 #Start payload event
-cmd("MAX_FSX SM_START_REL with SECONDS 0, FILE_NAME PayloadUSAFAST.rb, ARGS '#{start_time} #{mode} #{duration} #{experiment_csf} #{offload_csf}'")
+cmd("MAX_FSX SM_START_REL with SECONDS 0, FILE_NAME PayloadUSAFAST.rb, ARGS '#{start_time} #{mode} #{duration}'")
 
 #Slew back to Sun Track if slewing
 if slew_mode != 0

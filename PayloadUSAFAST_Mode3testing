@@ -8,6 +8,7 @@
 #       0 - Aliveness Check
 #       1 - Functional
 #       2 - Take photos 
+#       3 - Use ST to return quaternions, ops as normal
 # ============================================================================
 
 

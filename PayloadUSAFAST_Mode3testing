@@ -68,12 +68,17 @@ def PayloadUSAFAST(start_time, mode, duration)
         end
 
         when 3
-          cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Beginning Mode #{mode}: Normal Ops'") #not sure what to call this mode?
+          cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Beginning Mode #{mode}: Quaternions Return'") 
           wait(1)
 
           # Take pictures (im assuming this take picture part is same as mode 2)
           cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Running shell script to take pictures'")
-          cmd("MAX_FSX MISC_SYSTEM with STRING 'source /home/root/max/seq/sh/USAFA_ST_take_pictures.sh'")
+          #cmd("MAX_FSX MISC_SYSTEM with STRING 'source /home/root/max/seq/sh/USAFA_ST_take_pictures.sh'") so this just navigates to folder for storage, so maybe 
+          #we can just navigate to ace using same format
+
+          #call acquistion to take picture
+          echo \"\\r\" | /opt/spinnaker/bin/Acquisition
+          
           wait(30) #Star Tracker team says pictures are taken rapidly so 30 sec should be plenty for 10 pics
 
           # now need to do the star tracker part
@@ -81,7 +86,7 @@ def PayloadUSAFAST(start_time, mode, duration)
           # then i think need to feed quaternions to adcs somehow?
           
           wait(1)
-          cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Completed Mode #{mode}: Normal Ops'") #not sure what to call this mode? 
+          cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Completed Mode #{mode}: Quaternions Return'") #not sure what to call this mode? 
           wait(1)
 
         end

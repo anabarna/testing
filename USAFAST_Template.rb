@@ -8,7 +8,7 @@
 # Set Variables
 start_time = DateTime.strptime("MM/DD/YYYY HH:MM:SS.000", date_format).to_time.to_i #strptime(Date, Format)
 mode = **
-duration = **    # For mode 2 (standard pictures) 30 seconds is plenty of time
+duration = **    # For mode 1 (standard pictures) 30 seconds is plenty of time
 exposure = **
 gain = **
 
@@ -30,7 +30,7 @@ wait_expression("Time.now.to_i >= #{slewincompletiontime-600}",wait_time)
 # Send EVR's
 cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, SEQUENCE BEGINNING'")
 wait(1)
-cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Start Time: #{start_time}, USAFAST Mode: #{mode}, Task Duration: #{task_duration}'")
+cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Start Time: #{start_time}, USAFAST Mode: #{mode}, Task Duration: #{task_duration}, Exposure: #{exposure}, Gain: #{gain}'")
 wait(1)
 
 #loop to start slew if slewing
@@ -45,7 +45,7 @@ end
 wait_expression("Time.now.to_i >= #{start_time-300}", wait_time) # Timeout variable set to wait 1 year.
 
 #Start payload event
-cmd("MAX_FSX SM_START_REL with SECONDS 0, FILE_NAME PayloadUSAFAST.rb, ARGS '#{start_time} #{mode} #{duration}'")
+cmd("MAX_FSX SM_START_REL with SECONDS 0, FILE_NAME PayloadUSAFAST.rb, ARGS '#{start_time} #{mode} #{duration} #{exposure} #{gain}'")
 
 #Slew back to Sun Track if slewing
 if slew_mode != 0

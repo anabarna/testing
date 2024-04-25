@@ -9,6 +9,8 @@
 start_time = DateTime.strptime("MM/DD/YYYY HH:MM:SS.000", date_format).to_time.to_i #strptime(Date, Format)
 mode = **
 duration = **    # For mode 2 (standard pictures) 30 seconds is plenty of time
+exposure = **
+gain = **
 
 #Set Slew Variables
 task_duration = duration     # Duration plus slew time

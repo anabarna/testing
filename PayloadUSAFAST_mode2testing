@@ -72,7 +72,7 @@ def PayloadUSAFAST(start_time, mode, duration, exposure, gain)
           
             # Take pictures
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Running shell script to take pictures'")
-            cmd("MAX_FSX MISC_SYSTEM with STRING 'source /home/root/max/seq/sh/USAFA_ST_take_pictures_exposure.sh #{value} #{value}'")  
+            cmd("MAX_FSX MISC_SYSTEM with STRING 'source /home/root/max/seq/sh/USAFA_ST_take_pictures_exposure.sh exposure=#{value} gain=#{value}'")  
 
             wait(30) #Star Tracker team says pictures are taken rapidly so 30 sec should be plenty for 10 pics
           

@@ -44,6 +44,7 @@ def PayloadUSAFAST(start_time, mode, duration, exposure, gain)
             wait(30)
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Completed Mode #{mode}: Aliveness'")
             wait(1)
+
         when 1 #taking 10 photos with default settings and sending to GS
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Beginning Mode #{mode}: Take Photos with Default Settings'") 
             wait(1)
@@ -64,7 +65,7 @@ def PayloadUSAFAST(start_time, mode, duration, exposure, gain)
             wait(1)
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Completed Mode #{mode}: Take Photo'") 
             wait(1)
-          end
+        end
     
         when 2 #taking 1 picture with edited input values
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Beginning Mode #{mode}: Take Photos with Modified Settings'") 
@@ -86,7 +87,7 @@ def PayloadUSAFAST(start_time, mode, duration, exposure, gain)
             wait(1)
             cmd("MAX_FSX MISC_EVR with STRING 'E_INFO: Seq: PayloadUSAFAST, Completed Mode #{mode}: Take Photo with Modified Settings'") 
             wait(1)
-          end
+        end
 
     rescue Exception => e
         # MUSAFAST raise an exception here to cause a non-zero exit code to move logs to anomaly
